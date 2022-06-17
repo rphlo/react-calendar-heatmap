@@ -61,6 +61,7 @@ class Demo extends React.Component {
         <div className="row">
           <div className="col-12 col-sm-6">
             <CalendarHeatmap
+            showWeekdayLabels={true}
               values={this.state.values}
               classForValue={(value) => {
                 if (!value) {
