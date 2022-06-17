@@ -47,7 +47,7 @@ class Demo extends React.Component {
     }
     // Configuration for react-tooltip
     return {
-      'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${value.count}`,
+      'data-tip': `${value.date.toString()} has count: ${value.count}`,
     };
   };
 
