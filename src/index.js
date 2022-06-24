@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
-import { DAYS_IN_WEEK, MILLISECONDS_IN_ONE_DAY, DAY_LABELS, MONTH_LABELS } from './constants';
+import { DateTime } from "luxon";
+import { DAYS_IN_WEEK, DAY_LABELS, MONTH_LABELS } from './constants';
 import {
   dateNDaysAgo,
   shiftDate,
@@ -16,16 +17,8 @@ const CSS_PSEDUO_NAMESPACE = 'react-calendar-heatmap-';
 
 class CalendarHeatmap extends React.Component {
   getDateDifferenceInDays() {
-    const { startDate, numDays } = this.props;
-    if (numDays) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'numDays is a deprecated prop. It will be removed in the next release. Consider using the startDate prop instead.',
-      );
-      return numDays;
-    }
-    const timeDiff = this.getEndDate() - convertToDate(startDate);
-    return Math.ceil(timeDiff / MILLISECONDS_IN_ONE_DAY);
+    const { startDate } = this.props;
+    return Math.ceil(DateTime.fromJSDate(this.getEndDate()).diff(DateTime.fromJSDate(convertToDate(startDate)).startOf("day"), ["days"]).toObject().days)
   }
 
   getSquareSizeWithGutter() {
@@ -53,7 +46,7 @@ class CalendarHeatmap extends React.Component {
   }
 
   getStartDate() {
-    return shiftDate(this.getEndDate(), -this.getDateDifferenceInDays() + 1); // +1 because endDate is inclusive
+    return shiftDate(this.getEndDate(), -this.getDateDifferenceInDays());
   }
 
   getEndDate() {
@@ -65,13 +58,12 @@ class CalendarHeatmap extends React.Component {
   }
 
   getNumEmptyDaysAtStart() {
-    const dayOfWeek = this.getStartDate().getDay();
-    return dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const dayOfWeek = DateTime.fromJSDate(this.getStartDate()).weekday - 1;
+    return dayOfWeek;
   }
 
   getNumEmptyDaysAtEnd() {
-    let dayOfWeek = this.getEndDate().getDay();
-    dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    let dayOfWeek = DateTime.fromJSDate(this.getEndDate()).weekday - 1;
     return DAYS_IN_WEEK - 1 - dayOfWeek;
   }
 
@@ -103,7 +95,7 @@ class CalendarHeatmap extends React.Component {
   getValueCache = memoizeOne((props) =>
     props.values.reduce((memo, value) => {
       const date = convertToDate(value.date);
-      const index = Math.floor((date - this.getStartDateWithEmptyDays()) / MILLISECONDS_IN_ONE_DAY);
+      const index = Math.floor((DateTime.fromJSDate(date).startOf("day").diff(DateTime.fromJSDate(this.getStartDateWithEmptyDays()).startOf("day"), ["days"])).toObject().days);
       // eslint-disable-next-line no-param-reassign
       memo[index] = {
         value,
@@ -234,7 +226,7 @@ class CalendarHeatmap extends React.Component {
   renderSquare(dayIndex, index) {
     const indexOutOfRange =
       index < this.getNumEmptyDaysAtStart() ||
-      index >= this.getNumEmptyDaysAtStart() + this.getDateDifferenceInDays();
+      index > this.getNumEmptyDaysAtStart() + this.getDateDifferenceInDays();
     if (indexOutOfRange && !this.props.showOutOfRangeDays) {
       return null;
     }

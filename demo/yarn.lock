@@ -6231,6 +6231,11 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
+luxon@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.4.0.tgz#9435806545bb32d4234dab766ab8a3d54847a765"
+  integrity sha512-w+NAwWOUL5hO0SgwOHsMBAmZ15SoknmQXhSO0hIbJCAmPKSsGeK8MlmhYh2w6Iib38IxN2M+/ooXWLbeis7GuA==
+
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-2.1.0.tgz#5f0310e18b8be898cc07009295a30ae41e91e6f5"
@@ -8237,8 +8242,9 @@ react-app-polyfill@^1.0.5:
     whatwg-fetch "^3.0.0"
 
 react-calendar-heatmap@../:
-  version "1.8.1"
+  version "1.9.0"
   dependencies:
+    luxon "^2.4.0"
     memoize-one "^5.0.0"
     prop-types "^15.6.2"
 

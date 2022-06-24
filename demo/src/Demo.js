@@ -1,12 +1,14 @@
 import React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import ReactTooltip from 'react-tooltip';
+import { DateTime } from "luxon";
+
 
 function shiftDate(date, numDays) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + numDays);
-  return newDate;
+  const newDate = DateTime.fromJSDate(new Date(date));
+  return newDate.plus({days: numDays}).toJSDate();
 }
+
 
 function getRange(count) {
   const arr = [];
@@ -31,12 +33,14 @@ function generateRandomValues(count, date = new Date()) {
 
 class Demo extends React.Component {
   state = {
-    values: generateRandomValues(200),
+    values: generateRandomValues(2000),
   };
 
   generateValues = () => {
+    const v = generateRandomValues(2000)
+    console.log(v)
     this.setState({
-      values: generateRandomValues(200),
+      values: v,
     });
   };
 
@@ -52,7 +56,7 @@ class Demo extends React.Component {
   };
 
   handleClick = (value) => {
-    alert(`You clicked on ${value.date.toISOString().slice(0, 10)} with count: ${value.count}`);
+    //alert(`You clicked on ${value.date.toISOString().slice(0, 10)} with count: ${value.count}`);
   };
 
   render() {
@@ -71,6 +75,8 @@ class Demo extends React.Component {
               }}
               tooltipDataAttrs={this.getTooltipDataAttrs}
               onClick={this.handleClick}
+              startDate={DateTime.local(2021,1,1)}
+              endDate={DateTime.local(2021,12,31).startOf('day').toJSDate()}
             />
           </div>
           <div className="col-12 col-sm-6">
